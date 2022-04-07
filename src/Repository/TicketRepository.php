@@ -19,6 +19,7 @@ class TicketRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ticket::class);
+
     }
 
     /**
@@ -43,6 +44,11 @@ class TicketRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    private function getOpenTicketQueryBuilder($alias){
+        return $this ->createQueryBuilder('ticket')
+            ->orderBy("ticket,createdAt", "ASC");
     }
 
     // /**

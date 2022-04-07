@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Group;
+use App\Entity\Ticket;
 use App\Form\GroupType;
+use App\Form\TicketType;
 use App\Repository\GroupRepository;
+use App\Repository\TicketRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,54 +20,71 @@ class GroupController extends AbstractController
     #[Route('/', name: 'app_group_index', methods: ['GET'])]
     public function index(GroupRepository $groupRepository): Response
     {
+       // $group = new Group(/*$event*/);
+
         return $this->render('group/index.html.twig', [
             'groups' => $groupRepository->findAll(),
+           // 'group' =>$group,
         ]);
     }
 
-    #[Route('/new', name: 'app_group_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, GroupRepository $groupRepository): Response
+//    #[Route('/new', name: 'app_group_new', methods: ['GET', 'POST'])]
+//    public function new(Request $request, GroupRepository $groupRepository, Event $event): Response
+//    {
+//        $group = new Group(/*$event*/);
+//        $form = $this->createForm(GroupType::class, $group);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $groupRepository->add($group);
+//            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+//        }
+//
+//        return $this->renderForm('group/new.html.twig', [
+//            'group' => $group,
+//            'form' => $form,
+//        ]);
+//    }
+//Create a new ticket
+    #[Route('/{linkToken}', name: 'app_group_show', methods: ['GET', 'POST'])]
+    public function show( Group $group, Request $request, TicketRepository $ticketRepository): Response
     {
-        $group = new Group();
-        $form = $this->createForm(GroupType::class, $group);
+
+        $ticket = new Ticket($group);
+        $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $groupRepository->add($group);
-            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+            $ticketRepository->add($ticket);
+           // return $this->redirectToRoute('app_ticket_index', [], Response::HTTP_SEE_OTHER);
         }
+        $tickets = $ticketRepository ->findByGroup($group, array('createdAt' => 'DESC'));
 
-        return $this->renderForm('group/new.html.twig', [
+        return $this->renderForm('group/show.html.twig', [
             'group' => $group,
+            'ticket' => $ticket,
             'form' => $form,
+            'tickets'=>$tickets,
         ]);
     }
 
-    #[Route('/{linkToken}', name: 'app_group_show', methods: ['GET'])]
-    public function show(Group $group): Response
-    {
-        return $this->render('group/show.html.twig', [
-            'group' => $group,
-        ]);
-    }
-
-    #[Route('/{linkToken}/edit', name: 'app_group_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Group $group, GroupRepository $groupRepository): Response
-    {
-        $form = $this->createForm(GroupType::class, $group);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $groupRepository->add($group);
-            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('group/edit.html.twig', [
-            'group' => $group,
-            'form' => $form,
-        ]);
-    }
-
+//    #[Route('/{linkToken}/edit', name: 'app_group_edit', methods: ['GET', 'POST'])]
+//    public function edit(Request $request, Group $group, GroupRepository $groupRepository): Response
+//    {
+//        $form = $this->createForm(GroupType::class, $group);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $groupRepository->add($group);
+//            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+//        }
+//
+//        return $this->renderForm('group/edit.html.twig', [
+//            'group' => $group,
+//            'form' => $form,
+//        ]);
+//    }
+//
     #[Route('/{linkToken}', name: 'app_group_delete', methods: ['POST'])]
     public function delete(Request $request, Group $group, GroupRepository $groupRepository): Response
     {

@@ -3,10 +3,12 @@
 {% block title %}Event{% endblock %}
 
 {% block body %}
-    <h1>{{ event.name }}</h1>
+    <h1>{{ event.name }} - Groups</h1>
+    <h2>Create a group</h2>
+    {{ include('group/_form.html.twig') }}
 
 
-<table class="table">
+    <table class="table">
     <thead>
     <tr>
         <th>Name</th>

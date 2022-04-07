@@ -32,8 +32,9 @@ class Group
     #[ORM\OneToMany(mappedBy: 'group', targetEntity: Ticket::class)]
     private $tickets;
 
-    public function __construct()
+    public function __construct(Event $event)
     {
+        $this->setEvent($event);
         $this->linkToken = bin2hex(random_bytes(20));
 
         // ->add('adminLinkToken', HiddenType::class, ['data' => bin2hex(random_bytes(20)),

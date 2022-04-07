@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TicketRepository;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
@@ -16,7 +18,7 @@ class Ticket
     #[ORM\Column(type: 'text')]
     private $request;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'tickets')]
@@ -29,6 +31,12 @@ class Ticket
     #[ORM\ManyToOne(targetEntity: Priority::class, inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private $priority;
+
+    public function __construct(Group $group){
+        $this->setGroup($group);
+        $this->createdAt = new DateTime('now');
+        $this->status = null;
+    }
 
     public function getId(): ?int
     {
@@ -47,7 +55,7 @@ class Ticket
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -94,4 +102,7 @@ class Ticket
 
         return $this;
     }
+
+
+
 }
