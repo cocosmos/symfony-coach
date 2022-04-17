@@ -12,39 +12,13 @@ use App\Repository\TicketRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/group')]
 class GroupController extends AbstractController
 {
-    #[Route('/', name: 'app_group_index', methods: ['GET'])]
-    public function index(GroupRepository $groupRepository): Response
-    {
-       // $group = new Group(/*$event*/);
 
-        return $this->render('group/index.html.twig', [
-            'groups' => $groupRepository->findAll(),
-           // 'group' =>$group,
-        ]);
-    }
-
-//    #[Route('/new', name: 'app_group_new', methods: ['GET', 'POST'])]
-//    public function new(Request $request, GroupRepository $groupRepository, Event $event): Response
-//    {
-//        $group = new Group(/*$event*/);
-//        $form = $this->createForm(GroupType::class, $group);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $groupRepository->add($group);
-//            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
-//        }
-//
-//        return $this->renderForm('group/new.html.twig', [
-//            'group' => $group,
-//            'form' => $form,
-//        ]);
-//    }
 //Create a new ticket
     #[Route('/{linkToken}', name: 'app_group_show', methods: ['GET', 'POST'])]
     public function show( Group $group, Request $request, TicketRepository $ticketRepository): Response
@@ -68,30 +42,20 @@ class GroupController extends AbstractController
         ]);
     }
 
-//    #[Route('/{linkToken}/edit', name: 'app_group_edit', methods: ['GET', 'POST'])]
-//    public function edit(Request $request, Group $group, GroupRepository $groupRepository): Response
-//    {
-//        $form = $this->createForm(GroupType::class, $group);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $groupRepository->add($group);
-//            return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
-//        }
-//
-//        return $this->renderForm('group/edit.html.twig', [
-//            'group' => $group,
-//            'form' => $form,
-//        ]);
-//    }
-//
-    #[Route('/{linkToken}', name: 'app_group_delete', methods: ['POST'])]
-    public function delete(Request $request, Group $group, GroupRepository $groupRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$group->getId(), $request->request->get('_token'))) {
-            $groupRepository->remove($group);
-        }
 
-        return $this->redirectToRoute('app_group_index', [], Response::HTTP_SEE_OTHER);
+//delete a group
+    #[Route('/{linkToken}/{id}/delete', name: 'app_group_delete', methods: ['POST'])]
+    public function delete(Request $request, Group $group, GroupRepository $groupRepository, Event $event, TicketRepository $ticketRepository): Response
+    {
+
+        if ($this->isCsrfTokenValid('delete'.$group->getId(), $request->request->get('_token'))) {
+            //check if group as ticket
+            if($ticketRepository->findByGroup($group)){
+                throw new AccessDeniedHttpException();
+            }else {
+                $groupRepository->remove($group);
+            }
+        }
+        return $this->redirectToRoute('app_event_show', ["adminLinkToken" => $event->getAdminLinkToken()], Response::HTTP_SEE_OTHER);
     }
 }

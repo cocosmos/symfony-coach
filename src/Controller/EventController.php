@@ -7,6 +7,8 @@ use App\Entity\Group;
 use App\Entity\Ticket;
 use App\Form\EventType;
 use App\Form\GroupType;
+use App\Form\TicketByEventType;
+use App\Form\TicketType;
 use App\Repository\EventRepository;
 use App\Repository\GroupRepository;
 use App\Repository\TicketRepository;
@@ -58,7 +60,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $groupRepository->add($group);
-            //return $this->redirectToRoute('', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_event_show', ['adminLinkToken'=> $event->getAdminLinkToken()], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('event/show.html.twig', [
             "event" => $event,
@@ -69,14 +71,9 @@ class EventController extends AbstractController
     }
 
     #[Route('event/{adminLinkToken}/tickets', name: 'app_event_list', methods: ['GET'])]
-    public function list(Event $event, TicketRepository $ticketRepository, EventRepository $eventRepository ): Response
+    public function list(Event $event, TicketRepository $ticketRepository): Response
     {
-       // dd($event);
         $tickets = $ticketRepository->findbyEvent($event);
-
-
-        //$tickets = $ticketRepository -> findBy($tickets);
-
 
         return $this->renderForm('event/list.html.twig', [
             "event" => $event,
@@ -84,4 +81,41 @@ class EventController extends AbstractController
 
         ]);
     }
+
+    #[Route('event/{adminLinkToken}/tickets/{id}', name: 'app_event_ticket_edit', methods: ['GET', 'POST'])]
+    public function editTicket(Event $event, Ticket $ticket, Request $request, TicketRepository $ticketRepository): Response
+    {
+        $form = $this->createForm(TicketByEventType::class, $ticket);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //if the status changed to archived the group set the lastArchivedAt at now
+            $getStatus =$request->attributes->get("ticket")->getStatus()->getIsArchived();
+
+            if($getStatus == true){
+                $ticket->getGroup()->setLastArchived(new \DateTime());
+            }
+            $ticketRepository->add($ticket);
+
+
+            return $this->redirectToRoute('app_event_list', ["adminLinkToken" => $event->getAdminLinkToken()]);
+        }
+
+
+
+        return $this->renderForm('event/edit.html.twig', [
+            'event' => $event,
+            'ticket' => $ticket,
+            'form' => $form,
+        ]);
+
+
+    }
+
+
+
+
+
+
 }

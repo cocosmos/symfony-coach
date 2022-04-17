@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Group;
 use App\Entity\Ticket;
 use App\Form\TicketType;
-use App\Repository\GroupRepository;
 use App\Repository\TicketRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,6 @@ class TicketController extends AbstractController
     #[Route('/group/{linkToken}/ticket/{id}/edit', name: 'app_ticket_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TicketRepository $ticketRepository, Group $group, Ticket $ticket): Response
     {
-        //dd("fdf");
 
         $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
@@ -49,12 +48,6 @@ class TicketController extends AbstractController
             $ticketRepository->remove($ticket);
         }
 
-        return $this->redirectToRoute('app_group_show', ["linkToken" =>$group->getLinkToken()]
-        , Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_group_show', ["linkToken" =>$group->getLinkToken()], Response::HTTP_SEE_OTHER);
     }
-
-
-
-
-
 }

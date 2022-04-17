@@ -21,7 +21,7 @@
                 <td>{{ ticket.group.name }}</td>
                 <td>{{ ticket.createdAt ? ticket.createdAt|date("F jS \\a\\t g:ia") : '' }}</td>
                 <td>
-                    <a href="#">show</a>
+                    <a href="{{ path('app_event_ticket_edit', {'adminLinkToken': event.adminLinkToken, 'id': ticket.id}) }}">Edit</a>
                 </td>
             </tr>
         {% else %}

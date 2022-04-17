@@ -36,6 +36,8 @@ class Ticket
         $this->setGroup($group);
         $this->createdAt = new DateTime('now');
         $this->status = null;
+
+
     }
 
     public function getId(): ?int
