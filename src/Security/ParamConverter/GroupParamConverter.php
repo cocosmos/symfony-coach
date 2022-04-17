@@ -17,15 +17,11 @@ class GroupParamConverter implements ParamConverterInterface {
         $this->groupRepository = $groupRepository;
     }
 
-    public function supports(ParamConverter $configuration){
-        if ($configuration->getClass()===Group::class and $configuration->getName()==="group"){
-            return true;
-        }
-        return false;
-    }
+
     public function apply(Request $request, ParamConverter $configuration){
-        $id = $request->get("id");
+       // $id = $request->get("linkToken")->;
         $linkToken = $request->get("linkToken");
+        $id = $this->groupRepository->findOneBy(['linkToken'=> $linkToken])->getId();
 
 
         $group = $this->groupRepository->findOneBy([
@@ -33,11 +29,18 @@ class GroupParamConverter implements ParamConverterInterface {
             'linkToken'=> $linkToken,
         ]);
 
+
         if ($group){
             $request->attributes->set($configuration->getName(), $group);
         }
 
-        //dd( $linkToken);
+    }
+
+    public function supports(ParamConverter $configuration){
+        if ($configuration->getClass()===Group::class and $configuration->getName()==="group"){
+            return true;
+        }
+        return false;
     }
 
 

@@ -69,12 +69,12 @@ class EventController extends AbstractController
     }
 
     #[Route('event/{adminLinkToken}/tickets', name: 'app_event_list', methods: ['GET'])]
-    public function list(Event $event, TicketRepository $ticketRepository ): Response
+    public function list(Event $event, TicketRepository $ticketRepository, EventRepository $eventRepository ): Response
     {
+       // dd($event);
+        $tickets = $ticketRepository->findbyEvent($event);
 
-        $tickets = $ticketRepository->findByEvent($event);
 
-        dd($tickets);
         //$tickets = $ticketRepository -> findBy($tickets);
 
 

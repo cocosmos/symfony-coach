@@ -14,7 +14,7 @@
 
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ ticket.priority.name }} - {{ ticket.status ? ticket.status : "Waiting.." }} </h5>
+                    <h5 class="card-title">{{ ticket.priority.name }} - {{ ticket.status ? ticket.status.name : "Waiting.." }} </h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ ticket.createdAt ? ticket.createdAt |date("F jS \\a\\t g:ia") : '' }}</h6>
                     <p class="card-text">{{ ticket.request }}</p>
                     <a href="{{ path('app_ticket_edit', {'linkToken': group.linkToken, 'id':ticket.id}) }}" class="card-link">Show</a>

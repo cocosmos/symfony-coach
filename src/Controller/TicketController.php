@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\Ticket;
 use App\Form\TicketType;
+use App\Repository\GroupRepository;
 use App\Repository\TicketRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,15 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TicketController extends AbstractController
 {
-//    #[Route('/group/{linkToken}/ticket/{id}/edit', name: 'app_ticket_edit')]
-//    public function edit(Ticket $ticket): Response
-//    {
-//        return $this->render('ticket/index.html.twig', [
-//            'controller_name' => 'TicketController',
-//            'ticket' => $ticket
-//        ]);
-//    }
-
     #[Route('/', name: 'app_ticket_index')]
     public function index(TicketRepository $ticketRepository): Response
     {
@@ -30,8 +22,8 @@ class TicketController extends AbstractController
             'events' => $ticketRepository->findAll(),
         ]);
     }
-    #[Route('/group/{linkToken}/ticket/23/edit', name: 'app_ticket_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request,  TicketRepository $ticketRepository, Group $group, Ticket $ticket ): Response
+    #[Route('/group/{linkToken}/ticket/{id}/edit', name: 'app_ticket_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, TicketRepository $ticketRepository, Group $group, Ticket $ticket): Response
     {
         //dd("fdf");
 
@@ -40,7 +32,7 @@ class TicketController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ticketRepository->add($ticket);
-            return $this->redirectToRoute('app_group_show', ["linkToken" =>$group->getLinkToken()]);
+            return $this->redirectToRoute('app_group_show', ["linkToken" => $group->getLinkToken()]);
         }
 
         return $this->renderForm('ticket/edit.html.twig', [
@@ -50,8 +42,8 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[Route('/group/{linkToken}/ticket/{id}/delete}', name: 'app_ticket_delete', methods: ['POST'])]
-    public function delete(Request $request , Ticket $ticket, Group $group, TicketRepository $ticketRepository, ): Response
+    #[Route('/group/{linkToken}/ticket/{id}/delete', name: 'app_ticket_delete', methods: ['POST'])]
+    public function delete(Request $request, Ticket $ticket, Group $group, TicketRepository $ticketRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ticket->getId(), $request->request->get('_token'))) {
             $ticketRepository->remove($ticket);

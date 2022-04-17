@@ -2,11 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
+use App\Entity\Group;
+use App\Entity\Status;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use function Symfony\Component\Translation\t;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -46,9 +51,27 @@ class TicketRepository extends ServiceEntityRepository
         }
     }
 
+
+
     private function getOpenTicketQueryBuilder($alias){
         return $this ->createQueryBuilder('ticket')
             ->orderBy("ticket,createdAt", "ASC");
+    }
+
+    public function findbyEvent(Event $event){
+        return $this->createQueryBuilder('t')
+
+            ->innerJoin(Group::class, "g", Join::WITH, "t.group = g.id")
+            ->leftJoin(Status::class, "s", Join::WITH, "t.status = s.id")
+            ->where("g.event = :event")
+            ->andWhere("t.status is NULL")
+            ->andWhere("g.event = :event")
+            ->orWhere("s.isArchived = false")
+            ->andWhere("g.event = :event")
+            ->setParameter('event', $event)
+            ->orderBy('t.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**
