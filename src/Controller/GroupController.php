@@ -30,10 +30,10 @@ class GroupController extends AbstractController
 
         if($ticketRepository->findByGroup($group)){
             $LastTicket= $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'), 1,0)[0]->getCreatedAt();
-            $waiting = $ticketRepository->countGroupBefore($event, $group, $LastTicket);
         }else{
-            $waiting = 0;
+            $LastTicket = new \DateTime();
         }
+        $waiting = $ticketRepository->countGroupBefore($event, $group, $LastTicket);
 
 
         if ($form->isSubmitted() && $form->isValid()) {

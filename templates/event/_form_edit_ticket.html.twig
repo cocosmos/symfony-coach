@@ -1,12 +1,12 @@
 {{ form_start(form) }}
 <div class="mt-5 mb-5">
     <h2>Choose the Status</h2>
-    <div class="form-floating text-dark">
+    <div class="form-floating text-dark ">
         {{ form_widget(form.status, {'attr': {'class': 'form-select mb-3'}}) }}
         {{ form_label(form.status, "Status") }}
     </div>
     <div class="text-center">
-        <button class="btn btn-outline-light">{{ button_label|default('Save Ticket') }}</button>
+        <button class="btn btn-outline-light btn-lg">{{ button_label|default('Save Ticket') }}</button>
     </div>
 </div>
 {{ form_end(form) }}

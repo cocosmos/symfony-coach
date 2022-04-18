@@ -1,15 +1,15 @@
 {{ form_start(form) }}
-<div class="mt-5">
-    <div class="input-group mb-3">
+<div class="mt-5 mb-5">
+    <div class="input-group mb-3 ">
         <span class="input-group-text" id="basic-addon1">{{ form_label(form.name, "Event Name") }}</span>
-        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg'}}) }}
     </div>
-    <div class="input-group mb-3">
+    <div class="input-group mb-3 ">
         <span class="input-group-text" id="basic-addon1">@ {{ form_label(form.email) }}</span>
-        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg'}}) }}
     </div>
     <div class="text-center">
-        <button class="btn btn-outline-light">{{ button_label|default('Create') }}</button>
+        <button class="btn btn-outline-light btn-lg">{{ button_label|default('Create') }}</button>
     </div>
 </div>
 {{ form_end(form) }}

@@ -2,9 +2,7 @@
 
 {% block title %}Edit Ticket by event{% endblock %}
 {% block h1 %}Edit Ticket by event{% endblock %}
-
 {% block body %}
-
     <div class="card mt-5">
         <div class="card-body text-dark">
             <h4 class="card-title d-inline">{{ ticket.group.name }} </h4><span class="card-subtitle mb-2 text-muted float-end">{{ ticket.createdAt ? ticket.createdAt |date("F jS \\a\\t g:ia") : '' }}</span>
@@ -12,9 +10,5 @@
 
         </div>
     </div>
-
-
-
     {{ include('event/_form_edit_ticket.html.twig', {'button_label': 'Update'}) }}
-
 {% endblock %}

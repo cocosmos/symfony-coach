@@ -21,8 +21,8 @@
             <div class="card-body">
                 <div>
                     <div class="input-group mb-3">
-                    <input id="groupLink" class="form-control" type="text" value="localhost{{ path('app_group_show', {'linkToken': group.linkToken}) }}" aria-label="readonly input example" readonly>
-                    <button onclick="copyClipboard()" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">
+                    <input class="form-control groupLink" type="text" value="localhost{{ path('app_group_show', {'linkToken': group.linkToken}) }}" aria-label="readonly input example" readonly>
+                    <button class="btn btn-primary copyBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
                             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"></path>
                             <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"></path>
@@ -39,12 +39,18 @@
     {% endfor %}
 
     <script>
-        function copyClipboard() {
-            let copyText = document.getElementById("groupLink");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-        }
+            let copyBtn = document.getElementsByClassName("copyBtn");
+            let copyText = document.getElementsByClassName("groupLink");
+
+             for (let i = 0; i < copyBtn.length;i++){
+                 copyBtn[i].onclick=function (){
+                         copyText[i].select();
+                         copyText[i].setSelectionRange(0, 99999);
+                         navigator.clipboard.writeText(copyText[i].value);
+                 }
+
+
+             }
 
     </script>
 

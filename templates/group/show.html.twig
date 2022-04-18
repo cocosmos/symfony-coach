@@ -6,7 +6,7 @@
 {% block body %}
 
 
-
+    <h2 class="mt-5">Create a ticket</h2>
     {{ include('ticket/_form.html.twig') }}
     <div>
         <h2>Waiting Line</h2>
@@ -32,7 +32,7 @@
 
             {% endif %}
             <div>
-                {{ waiting ==0 ? "It's your turn !": "There is "~ waiting~ " groups before you." }}
+                {{ waiting ==0 ? "It's your turn !": "There is "~ waiting ~ " groups before you." }}
             </div>
 
 
