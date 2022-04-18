@@ -19,7 +19,6 @@ class GroupParamConverter implements ParamConverterInterface {
 
 
     public function apply(Request $request, ParamConverter $configuration){
-       // $id = $request->get("linkToken")->;
         $linkToken = $request->get("linkToken");
         $id = $this->groupRepository->findOneBy(['linkToken'=> $linkToken])->getId();
 

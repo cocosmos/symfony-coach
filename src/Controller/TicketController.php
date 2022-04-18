@@ -14,13 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TicketController extends AbstractController
 {
-    #[Route('/', name: 'app_ticket_index')]
-    public function index(TicketRepository $ticketRepository): Response
-    {
-        return $this->render('event/index.html.twig', [
-            'events' => $ticketRepository->findAll(),
-        ]);
-    }
+    /**
+     * Page to edit a ticket
+     */
     #[Route('/group/{linkToken}/ticket/{id}/edit', name: 'app_ticket_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TicketRepository $ticketRepository, Group $group, Ticket $ticket): Response
     {
@@ -39,6 +35,9 @@ class TicketController extends AbstractController
             'form' => $form,
         ]);
     }
+    /**
+     * Delete ticket
+     */
 
     #[Route('/group/{linkToken}/ticket/{id}/delete', name: 'app_ticket_delete', methods: ['POST'])]
     public function delete(Request $request, Ticket $ticket, Group $group, TicketRepository $ticketRepository): Response

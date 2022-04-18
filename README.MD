@@ -7,7 +7,7 @@ Check it live : [ticket.mipamguillot.com](https://ticket.mipamguillot.com)
 
 
 
-##Command to Run :
+## Command to Run :
 Clone
 ```sh
  git clone git@gitlab.com:Cocosmos/symfony.git
@@ -19,5 +19,5 @@ Migrations
 ```
 Fixtures
 ```sh
- APP_ENV=dev php bin/console doctrine:fixtures:load -n
+php bin/console doctrine:fixtures:load -n
 ```

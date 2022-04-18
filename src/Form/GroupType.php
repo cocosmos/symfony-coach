@@ -13,7 +13,6 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name')
-           // ->add('lastArchived')
 
         ;
     }

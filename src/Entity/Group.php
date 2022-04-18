@@ -37,7 +37,6 @@ class Group
         $this->setEvent($event);
         $this->linkToken = bin2hex(random_bytes(20));
 
-        // ->add('adminLinkToken', HiddenType::class, ['data' => bin2hex(random_bytes(20)),
         $this->tickets = new ArrayCollection();
 
     }

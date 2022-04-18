@@ -18,12 +18,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupController extends AbstractController
 {
 
-//Create a new ticket
+    /**
+     * Page to create and show ticket
+     */
     #[Route('/{linkToken}', name: 'app_group_show', methods: ['GET', 'POST'])]
     public function show( Group $group, Request $request, TicketRepository $ticketRepository, Event $event): Response
     {
-
-
         $ticket = new Ticket($group);
         $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
@@ -52,7 +52,9 @@ class GroupController extends AbstractController
     }
 
 
-//delete a group
+    /**
+     * Delete a group
+     */
     #[Route('/{linkToken}/{id}/delete', name: 'app_group_delete', methods: ['POST'])]
     public function delete(Request $request, Group $group, GroupRepository $groupRepository, Event $event, TicketRepository $ticketRepository): Response
     {

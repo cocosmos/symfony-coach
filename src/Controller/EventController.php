@@ -22,6 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
+    /**
+     * Page to display existing event
+     */
     #[Route('/admin', name: 'app_event_index')]
     public function index(EventRepository $eventRepository): Response
     {
@@ -29,7 +32,9 @@ class EventController extends AbstractController
             'events' => $eventRepository->findAll(),
         ]);
     }
-
+    /**
+     * Page to add event
+     */
     #[Route('/', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EventRepository $eventRepository): Response
     {
@@ -52,11 +57,14 @@ class EventController extends AbstractController
     }
 
     /**
+     * Page to show groups per event
      * @throws OptimisticLockException
      * @throws ORMException
      * @throws NonUniqueResultException
      * @throws NoResultException
+     *
      */
+
     #[Route('event/{adminLinkToken}/groups', name: 'app_event_show', methods: ['GET', 'POST'])]
     public function show(Event $event, GroupRepository $groupRepository, Request $request, TicketRepository $ticketRepository ): Response
     {
@@ -80,7 +88,9 @@ class EventController extends AbstractController
             'form' => $form,
         ]);
     }
-
+    /**
+     * Page to show tickets per event
+     */
     #[Route('event/{adminLinkToken}/tickets', name: 'app_event_list', methods: ['GET'])]
     public function list(Event $event, TicketRepository $ticketRepository)
     {
@@ -92,6 +102,9 @@ class EventController extends AbstractController
 
         ]);
     }
+    /**
+     * Page to edit status of ticket per event
+     */
 
     #[Route('event/{adminLinkToken}/tickets/{id}', name: 'app_event_ticket_edit', methods: ['GET', 'POST'])]
     public function editTicket(Event $event, Ticket $ticket, Request $request, TicketRepository $ticketRepository): Response
