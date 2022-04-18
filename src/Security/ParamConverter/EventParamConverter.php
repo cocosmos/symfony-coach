@@ -20,6 +20,7 @@ class EventParamConverter implements ParamConverterInterface {
 
     public function apply(Request $request, ParamConverter $configuration){
 
+
         if ($request->get("adminLinkToken") == null){
             $adminLinkToken = $request->attributes->get("group")->getEvent()->getAdminLinkToken();
         } else{
@@ -27,8 +28,6 @@ class EventParamConverter implements ParamConverterInterface {
         }
 
         $id = $this->eventRepository->findOneBy(['adminLinkToken'=> $adminLinkToken])->getId();
-
-
         $event = $this->eventRepository->findOneBy([
             'id' =>$id,
             'adminLinkToken'=> $adminLinkToken,

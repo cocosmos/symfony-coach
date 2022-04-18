@@ -7,15 +7,21 @@
     <h2>Create a group</h2>
     {{ include('group/_form.html.twig') }}
 
+   {% if tickets %}
+        <h3>Tickets</h3>
+        <p>There is <a href="{{ path('app_event_list', {'adminLinkToken': event.adminLinkToken})  }}">{{ tickets }} open tickets</a></p>
+
+   {% endif %}
+
 
     <table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>LastArchived</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>LastArchived</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
     <tbody>
 
     {% for group in groups %}

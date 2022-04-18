@@ -8,10 +8,13 @@ use App\Entity\Ticket;
 use App\Form\EventType;
 use App\Form\GroupType;
 use App\Form\TicketByEventType;
-use App\Form\TicketType;
 use App\Repository\EventRepository;
 use App\Repository\GroupRepository;
 use App\Repository\TicketRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,13 +22,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
-//    #[Route('/', name: 'app_event_index')]
-//    public function index(EventRepository $eventRepository): Response
-//    {
-//        return $this->render('event/index.html.twig', [
-//            'events' => $eventRepository->findAll(),
-//        ]);
-//    }
+    #[Route('/admin', name: 'app_event_index')]
+    public function index(EventRepository $eventRepository): Response
+    {
+        return $this->render('event/index.html.twig', [
+            'events' => $eventRepository->findAll(),
+        ]);
+    }
 
     #[Route('/', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EventRepository $eventRepository): Response
@@ -48,11 +51,18 @@ class EventController extends AbstractController
         ]);
     }
 
-
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
     #[Route('event/{adminLinkToken}/groups', name: 'app_event_show', methods: ['GET', 'POST'])]
-    public function show(Event $event, GroupRepository $groupRepository, Request $request ): Response
+    public function show(Event $event, GroupRepository $groupRepository, Request $request, TicketRepository $ticketRepository ): Response
     {
-       $groups= $groupRepository -> findByEvent($event, ['lastArchived' => 'ASC']);
+        $groups= $groupRepository -> findByEvent($event);
+
+        $tickets = $ticketRepository ->findbyEventCount($event);
 
         $group = new Group($event);
         $form = $this->createForm(GroupType::class, $group);
@@ -66,14 +76,15 @@ class EventController extends AbstractController
             "event" => $event,
             "groups" => $groups,
             'group' => $group,
+            'tickets'=> $tickets,
             'form' => $form,
         ]);
     }
 
     #[Route('event/{adminLinkToken}/tickets', name: 'app_event_list', methods: ['GET'])]
-    public function list(Event $event, TicketRepository $ticketRepository): Response
+    public function list(Event $event, TicketRepository $ticketRepository)
     {
-        $tickets = $ticketRepository->findbyEvent($event);
+        $tickets = $ticketRepository->ThereIsEvent($event);
 
         return $this->renderForm('event/list.html.twig', [
             "event" => $event,
@@ -102,8 +113,6 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_event_list', ["adminLinkToken" => $event->getAdminLinkToken()]);
         }
 
-
-
         return $this->renderForm('event/edit.html.twig', [
             'event' => $event,
             'ticket' => $ticket,
@@ -112,10 +121,5 @@ class EventController extends AbstractController
 
 
     }
-
-
-
-
-
 
 }

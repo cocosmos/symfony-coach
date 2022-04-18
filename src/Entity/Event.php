@@ -34,9 +34,6 @@ class Event
     {
         $this->groups = new ArrayCollection();
         $this->adminLinkToken = bin2hex(random_bytes(20));
-
-       // ->add('adminLinkToken', HiddenType::class, ['data' => bin2hex(random_bytes(20)),
-
     }
 
     public function getId(): ?int

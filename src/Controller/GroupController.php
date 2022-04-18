@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Group;
 use App\Entity\Ticket;
-use App\Form\GroupType;
 use App\Form\TicketType;
 use App\Repository\GroupRepository;
 use App\Repository\TicketRepository;
@@ -21,24 +20,28 @@ class GroupController extends AbstractController
 
 //Create a new ticket
     #[Route('/{linkToken}', name: 'app_group_show', methods: ['GET', 'POST'])]
-    public function show( Group $group, Request $request, TicketRepository $ticketRepository): Response
+    public function show( Group $group, Request $request, TicketRepository $ticketRepository, Event $event): Response
     {
+
 
         $ticket = new Ticket($group);
         $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
 
+        $LastTicket= $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'), 1,0)[0]->getCreatedAt();
+       $waiting = $ticketRepository->countGroupBefore($event, $group, $LastTicket);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $ticketRepository->add($ticket);
-           // return $this->redirectToRoute('app_ticket_index', [], Response::HTTP_SEE_OTHER);
         }
-        $tickets = $ticketRepository ->findByGroup($group, array('createdAt' => 'DESC'));
+        $tickets = $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'));
 
         return $this->renderForm('group/show.html.twig', [
             'group' => $group,
             'ticket' => $ticket,
             'form' => $form,
             'tickets'=>$tickets,
+            'waiting'=>$waiting,
         ]);
     }
 
@@ -58,4 +61,6 @@ class GroupController extends AbstractController
         }
         return $this->redirectToRoute('app_event_show', ["adminLinkToken" => $event->getAdminLinkToken()], Response::HTTP_SEE_OTHER);
     }
+
+
 }

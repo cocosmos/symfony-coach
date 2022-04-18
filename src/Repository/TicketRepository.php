@@ -11,7 +11,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
-use function Symfony\Component\Translation\t;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -51,14 +50,12 @@ class TicketRepository extends ServiceEntityRepository
         }
     }
 
-
-
     private function getOpenTicketQueryBuilder($alias){
         return $this ->createQueryBuilder('ticket')
             ->orderBy("ticket,createdAt", "ASC");
     }
 
-    public function findbyEvent(Event $event){
+    public function ThereIsEvent(Event $event){
         return $this->createQueryBuilder('t')
 
             ->innerJoin(Group::class, "g", Join::WITH, "t.group = g.id")
@@ -73,6 +70,48 @@ class TicketRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
+     */
+    public function findbyEventCount(Event $event){
+        return $this->createQueryBuilder('t')
+            ->select('count(t.id)')
+            ->innerJoin(Group::class, "g", Join::WITH, "t.group = g.id")
+            ->leftJoin(Status::class, "s", Join::WITH, "t.status = s.id")
+            ->where("g.event = :event")
+            ->andWhere("t.status is NULL")
+            ->andWhere("g.event = :event")
+            ->orWhere("s.isArchived = false")
+            ->andWhere("g.event = :event")
+            ->setParameter('event', $event)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countGroupBefore(Event $event, Group $group, $LastTicket){
+        return $this->createQueryBuilder('t')
+            ->select('COUNT(DISTINCT g.id)')
+            ->innerJoin(Group::class, "g", Join::WITH, "t.group = g.id")
+            ->innerJoin(Event::class, "e", Join::WITH, "g.event = e.id")
+            ->leftJoin(Status::class, "s", Join::WITH, "t.status = s.id")
+            ->where("g.event = :event")
+            ->andWhere("t.createdAt < :date")
+            ->andWhere("g != :group")
+            ->andWhere("s.isArchived = false")
+            ->orWhere("t.status is NULL")
+            ->andWhere("g != :group")
+            ->andWhere("g.event = :event")
+            ->andWhere("t.createdAt < :date")
+            ->setParameter('event', $event)
+            ->setParameter('group', $group)
+            ->setParameter('date', $LastTicket)
+            ->getQuery()
+           ->getSingleScalarResult();
+    }
+
+
 
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects

@@ -2,10 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
 use App\Entity\Group;
+use App\Entity\Status;
+use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,6 +50,34 @@ class GroupRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+
+
+
+//    public function countGroupBefore(Group $group, Event $event, $LastTicket){
+//        return $this->createQueryBuilder('g')
+//            //->select('COUNT(DISTINCT g.id)')
+//            ->innerJoin(Event::class, "e", Join::WITH, "g.event = e.id")
+//            ->join(Ticket::class, "t")
+//            //->leftJoin(Ticket::class, "t", Join::WITH, "s.status = s.id")
+//            ->leftJoin(Status::class, "s", Join::WITH, "t.status = s.id")
+//            ->where("g.event = :event")
+//            ->andWhere("g != :group")
+//            //->orderBy('t.createdAt', 'ASC')
+//            ->andWhere("t.createdAt > :date")
+//            ->andWhere("g != :group")
+//            ->andWhere("g.event = :event")
+//            ->orWhere("s.isArchived = false")
+//            ->andWhere("g != :group")
+//            ->andWhere("g.event = :event")
+//            ->setParameter('group', $group)
+//            ->setParameter('event', $event)
+//            ->setParameter('date', $LastTicket)
+//
+//            ->getQuery()
+//            ->getResult();
+//           // ->getSingleScalarResult();
+//    }
 
     // /**
     //  * @return Group[] Returns an array of Group objects

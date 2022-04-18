@@ -3,11 +3,15 @@
 {% block title %}Group{% endblock %}
 
 {% block body %}
-    <h1>Group</h1>
-    <h2>Create a ticket</h2>
-    {{ include('ticket/_form.html.twig') }}
 
 <div class="container">
+    <h1>Group : {{ group.name }} </h1>
+    <h2>Create a ticket</h2>
+    {{ include('ticket/_form.html.twig') }}
+    <h2>Waiting Line</h2>
+
+    <p> {{ waiting ==0 ? "It's your turn !": "There is "~ waiting~ " groups before you." }} </p>
+    <h2>Open tickets</h2>
     <div class="row">
 
         {% for ticket in tickets %}
@@ -20,9 +24,6 @@
                     <a href="{{ path('app_ticket_edit', {'linkToken': group.linkToken, 'id':ticket.id}) }}" class="card-link">Show</a>
                 </div>
             </div>
-
-
-
 
         {% endfor %}
 

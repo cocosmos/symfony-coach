@@ -32,7 +32,7 @@ class Group
     #[ORM\OneToMany(mappedBy: 'group', targetEntity: Ticket::class)]
     private $tickets;
 
-    public function __construct(Event $event)
+    public function __construct($event)
     {
         $this->setEvent($event);
         $this->linkToken = bin2hex(random_bytes(20));

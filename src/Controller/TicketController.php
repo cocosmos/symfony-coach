@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Event;
 use App\Entity\Group;
 use App\Entity\Ticket;
 use App\Form\TicketType;
