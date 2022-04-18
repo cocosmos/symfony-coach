@@ -28,11 +28,17 @@ class GroupController extends AbstractController
         $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
 
-        $LastTicket= $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'), 1,0)[0]->getCreatedAt();
-       $waiting = $ticketRepository->countGroupBefore($event, $group, $LastTicket);
+        if($ticketRepository->findByGroup($group)){
+            $LastTicket= $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'), 1,0)[0]->getCreatedAt();
+            $waiting = $ticketRepository->countGroupBefore($event, $group, $LastTicket);
+        }else{
+            $waiting = 0;
+        }
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ticketRepository->add($ticket);
+            return $this->redirectToRoute("app_group_show", ["linkToken"=>$group->getLinkToken()]);
         }
         $tickets = $ticketRepository ->findByGroup($group, array('createdAt' => 'ASC'));
 

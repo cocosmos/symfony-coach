@@ -1,50 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Event{% endblock %}
+{% block title %}{{ event.name }} - Groups {% endblock %}
+{% block h1 %}{{ event.name }} - Groups {% endblock %}
 
 {% block body %}
-    <h1>{{ event.name }} - Groups</h1>
-    <h2>Create a group</h2>
     {{ include('group/_form.html.twig') }}
 
    {% if tickets %}
-        <h3>Tickets</h3>
-        <p>There is <a href="{{ path('app_event_list', {'adminLinkToken': event.adminLinkToken})  }}">{{ tickets }} open tickets</a></p>
+            <div class="row justify-content-center m-5">
+                <div class="list-group col col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <a href="{{ path('app_event_list', {'adminLinkToken': event.adminLinkToken})  }}" class="list-group-item list-group-item-action list-group-item-danger">Open Tickets : <span class="badge bg-primary rounded-pill float-end">{{ tickets }}</span> </a>
+                </div>
+            </div>
 
    {% endif %}
-
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>LastArchived</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-    <tbody>
-
+    <h3>Groups</h3>
     {% for group in groups %}
+        <div class="card mb-3 text-dark">
+            <h5 class="card-header">{{ group.name }} <span class="badge rounded-pill bg-primary float-end">{{ group.lastArchived ? group.lastArchived|date("F jS \\a\\t g:ia") : '' }}</span></h5>
+            <div class="card-body">
+                <div>
+                    <div class="input-group mb-3">
+                    <input id="groupLink" class="form-control" type="text" value="localhost{{ path('app_group_show', {'linkToken': group.linkToken}) }}" aria-label="readonly input example" readonly>
+                    <button onclick="copyClipboard()" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"></path>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"></path>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
 
-        <tr>
-            <td>{{ group.name }}</td>
-            <td>{{ group.lastArchived ? group.lastArchived|date("F jS \\a\\t g:ia") : '' }}</td>
-            <td>
-                <a href="{{ path('app_group_show', {'linkToken': group.linkToken}) }}">show</a>
+
                 {{ include('group/_delete_form.html.twig') }}
-            </td>
-        </tr>
 
-    {% else %}
-        <tr>
-            <td colspan="5">no records found</td>
-        </tr>
-
-
+            </div>
+        </div>
     {% endfor %}
-    </tbody>
-</table>
 
+    <script>
+        function copyClipboard() {
+            let copyText = document.getElementById("groupLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+        }
 
+    </script>
 
 {% endblock %}

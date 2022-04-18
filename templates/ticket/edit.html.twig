@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit ticket{% endblock %}
+{% block title %}Edit Ticket n°{{ ticket.id }}{% endblock %}
+{% block h1 %}Edit Ticket n°{{ ticket.id }}{% endblock %}
 
 {% block body %}
     <style>
@@ -9,12 +10,11 @@
     </style>
 
     <div class="example-wrapper">
-        <h1> Ticket n°{{ ticket.id }}</h1>
 
         {{ include('ticket/_form.html.twig') }}
 
         {{ include('ticket/_delete_form.html.twig') }}
-        <a href="{{ path('app_group_show', {'linkToken': group.linkToken}) }}">Return to list</a>
+        <a class="btn btn-outline-primary" href="{{ path('app_group_show', {'linkToken': group.linkToken}) }}">Return to list</a>
 
 
     </div>
